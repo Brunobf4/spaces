@@ -1,4 +1,4 @@
-import sqlite3, { Database, type } from "sqlite3";
+import { Database } from "bun:sqlite";
 import path from "path";
 import fs from "fs";
 import { dirname } from "path";
@@ -18,7 +18,7 @@ export default class User {
   private _name: string;
   private _email: string;
   private _senha: string;
-  private static _db: Database | null;
+  private static _db: Database | null = null;
 
   constructor(name: string, email: string, senha: string) {
     Object.assign(this, { _name: name, _email: email, _senha: senha });
@@ -26,36 +26,31 @@ export default class User {
   }
 
   static async initializeDatabase(): Promise<void> {
+    if (this._db) {
+      console.log("Banco de dados já está conectado.");
+      return;
+    }
+
     const dbDir = path.resolve(__dirname, "db");
     const dbPath = path.join(dbDir, "database.db");
 
-    if (!fs.existsSync(dbDir)) {
-      fs.mkdirSync(dbDir, { recursive: true });
-    }
-
-    if (!fs.existsSync(dbPath)) {
-      fs.writeFileSync(dbPath, "");
-    }
-
-    return new Promise<void>((resolve, reject) => {
-      if (!this._db) {
-        this._db = new sqlite3.Database(dbPath, (err) => {
-          if (err) {
-            console.error("Erro ao conectar ao banco de dados:", err.message);
-            reject(err);
-          } else {
-            console.log(
-              "Conexão com o banco de dados estabelecida com sucesso!"
-            );
-            this.createTable();
-            resolve();
-          }
-        });
-      } else {
-        console.log("Banco de dados já está conectado.");
-        resolve();
+    try {
+      // Use fs.promises for async file operations
+      if (!fs.existsSync(dbDir)) {
+        await fs.promises.mkdir(dbDir, { recursive: true });
       }
-    });
+
+      if (!fs.existsSync(dbPath)) {
+        await fs.promises.writeFile(dbPath, "");
+      }
+
+      this._db = new Database(dbPath);
+      console.log("Conexão com o banco de dados estabelecida com sucesso!");
+      this.createTable();
+    } catch (error) {
+      console.error("Erro ao conectar ao banco de dados:", error);
+      throw error;
+    }
   }
 
   static createTable(): void {
@@ -67,50 +62,42 @@ export default class User {
         senha TEXT NOT NULL
       );
     `;
-    this._db?.run(createTableSQL, (err) => {
-      if (err) {
-        console.error("Erro ao criar tabela:", err.message);
-      } else {
-        console.log("Tabela 'users' criada ou já existe.");
-      }
-    });
+    try {
+      this._db?.exec(createTableSQL);
+      console.log("Tabela 'users' criada ou já existe.");
+    } catch (err) {
+      console.error("Erro ao criar tabela:", err);
+      throw err;
+    }
   }
 
   static async createUser({ name, email, senha }: IUser): Promise<User> {
     if (!this._db) {
       await this.initializeDatabase();
     }
+    try {
+      const existingUser = this._db
+        ?.prepare("SELECT * FROM users WHERE email = $email")
+        .get({ $email: email });
 
-    return new Promise((resolve, reject) => {
-      this._db.get(
-        `SELECT * FROM users WHERE email = ?`,
-        [email],
-        (err, row) => {
-          if (err) {
-            console.error("Erro ao verificar e-mail:", err.message);
-            return reject(err);
-          }
-          if (row) {
-            return reject(new Error("E-mail já está em uso."));
-          }
+      if (existingUser) {
+        throw new Error("E-mail já está em uso.");
+      }
 
-          this._db.run(
-            `INSERT INTO users (name, email, senha) VALUES (?, ?, ?)`,
-            [name, email, senha],
-            function (err) {
-              if (err) {
-                console.error("Erro ao inserir usuário:", err.message);
-                reject(err);
-              } else {
-                console.log(`Usuário adicionado com ID: ${this.lastID}`);
-                const newUser = new User(name, email, senha);
-                resolve(newUser);
-              }
-            }
-          );
-        }
+      const insertStatement = this._db?.prepare(
+        `INSERT INTO users (name, email, senha) VALUES ($name, $email, $senha)`
       );
-    });
+      const info = insertStatement?.run({
+        $name: name,
+        $email: email,
+        $senha: senha,
+      });
+      console.log(`Usuário adicionado com ID: ${info.lastInsertRowid}`);
+      return new User(name, email, senha);
+    } catch (err) {
+      console.error("Erro ao inserir usuário:", err);
+      throw err;
+    }
   }
 
   // Método para listar um usuário pelo e-mail
@@ -118,25 +105,18 @@ export default class User {
     if (!this._db) {
       await this.initializeDatabase();
     }
-    return new Promise((resolve, reject) => {
-      this._db?.get(
-        `SELECT * FROM users WHERE email = ?`,
-        [email],
-        (err, row) => {
-          if (err) {
-            console.error("Erro ao buscar usuário:", err.message);
-            reject(err);
-          } else {
-            if (row) {
-              const user = new User(row.name, row.email, row.senha);
-              resolve(user);
-            } else {
-              resolve(null); // Nenhum usuário encontrado
-            }
-          }
-        }
-      );
-    });
+    try {
+      if (!this._db) throw new Error("Database not initialized");
+      const stmt = this._db.prepare("SELECT * FROM users WHERE email = $email");
+      const row = stmt.get({ $email: email });
+      if (row) {
+        return new User(row.name, row.email, row.senha);
+      }
+      return null;
+    } catch (err) {
+      console.error("Erro ao buscar usuário:", err);
+      throw err;
+    }
   }
 
   // Método para listar todos os usuários
@@ -144,19 +124,16 @@ export default class User {
     if (!this._db) {
       await this.initializeDatabase();
     }
-    return new Promise((resolve, reject) => {
-      this._db?.all(`SELECT * FROM users`, (err, rows) => {
-        if (err) {
-          console.error("Erro ao listar usuários:", err.message);
-          reject(err);
-        } else {
-          const users = rows.map(
-            (row) => new User(row.name, row.email, row.senha)
-          );
-          resolve(users);
-        }
-      });
-    });
+    try {
+      const rows = this._db?.prepare(`SELECT * FROM users`).all();
+
+      if (!rows) return [];
+
+      return rows.map((row) => new User(row.name, row.email, row.senha));
+    } catch (err) {
+      console.error("Erro ao listar usuários:", err);
+      throw err;
+    }
   }
 
   get name(): string {
