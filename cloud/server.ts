@@ -80,7 +80,7 @@ const albumCovers = [
     trackId: "1f774147-57ca-4841-9255-9f4b662212b4",
   },
   {
-    image: "/assets/SaySomething.png",
+    image: "/assets/saysomething.png",
     title: "Say Something",
     trackId: "d417d585-0627-4056-a6bd-5a22cf4df8a8",
   },
