@@ -1,47 +1,276 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
-<head>
+  <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Página de Boas-Vindas</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="../app.js" type="module" defer></script>
-</head>
+  </head>
 
-<body class="bg-gray-100 font-sans">
+  <body class="bg-gray-100 font-sans">
     <header class="bg-gray-900 text-white p-6 shadow-md">
-        <h1 class="text-3xl font-semibold text-center">Bem-vindo à nossa aplicação!</h1>
+      <h1 class="text-3xl font-semibold text-center">
+        Bem-vindo à nossa aplicação!
+      </h1>
     </header>
     <main class="container mx-auto mt-10 p-6">
-        <section id="welcome-message" class="mb-8 text-center">
-            <p class="text-xl text-gray-700">Olá, <span id="user-name" class="font-semibold"></span>! Estamos felizes em tê-lo aqui.</p>
-        </section>
-        <section id="user-form" class="bg-white p-8 rounded-xl shadow-lg border border-gray-200 max-w-md mx-auto">
-            <h2 class="text-2xl font-semibold mb-6 text-gray-800 text-center">Criar Novo Usuário</h2>
-            <form id="new-user-form" class="space-y-4">
-                <div>
-                    <label for="name" class="block text-gray-700 text-sm font-medium mb-2">Nome:</label>
-                    <input type="text" id="name" name="name" required class="border border-gray-300 rounded-md p-2 w-full" />
-                </div>
-                <div>
-                    <label for="email" class="block text-gray-700 text-sm font-medium mb-2">E-mail:</label>
-                    <input type="email" id="email" name="email" required class="border border-gray-300 rounded-md p-2 w-full" />
-                </div>
-                <div>
-                    <label for="senha" class="block text-gray-700 text-sm font-medium mb-2">Senha:</label>
-                    <input type="password" id="senha" name="senha" required class="border border-gray-300 rounded-md p-2 w-full" />
-                </div>
-                <button type="submit" class="bg-blue-500 text-white rounded-md p-2 w-full">Criar Usuário</button>
-            </form>
-            <button id="list-users" class="bg-green-500 text-white rounded-md p-2 w-full mt-4">Listar Todos os Usuários</button>
-            <div class="mt-4">
-                <input type="text" id="search-email" placeholder="Buscar por e-mail" class="border border-gray-300 rounded-md p-2 w-full" />
-                <button id="search-button" class="bg-yellow-500 text-white rounded-md p-2 w-full mt-2">Buscar Usuário</button>
-            </div>
-            <div id="user-list" class="mt-4"></div>
-        </section>
+      <section id="welcome-message" class="mb-8 text-center">
+        <p class="text-xl text-gray-700">
+          Olá, <span id="user-name" class="font-semibold"></span>! Estamos
+          felizes em tê-lo aqui.
+        </p>
+      </section>
+      <section
+        id="user-form"
+        class="bg-white p-8 rounded-xl shadow-lg border border-gray-200 max-w-md mx-auto"
+      >
+        <h2 class="text-2xl font-semibold mb-6 text-gray-800 text-center">
+          Criar Novo Usuário
+        </h2>
+        <form id="new-user-form" class="space-y-4">
+          <div>
+            <label
+              for="name"
+              class="block text-gray-700 text-sm font-medium mb-2"
+              >Nome:</label
+            >
+            <input
+              type="text"
+              id="name"
+              name="name"
+              required
+              class="border border-gray-300 rounded-md p-2 w-full"
+            />
+          </div>
+          <div>
+            <label
+              for="email"
+              class="block text-gray-700 text-sm font-medium mb-2"
+              >E-mail:</label
+            >
+            <input
+              type="email"
+              id="email"
+              name="email"
+              required
+              class="border border-gray-300 rounded-md p-2 w-full"
+            />
+          </div>
+          <div>
+            <label
+              for="senha"
+              class="block text-gray-700 text-sm font-medium mb-2"
+              >Senha:</label
+            >
+            <input
+              type="password"
+              id="senha"
+              name="senha"
+              required
+              class="border border-gray-300 rounded-md p-2 w-full"
+            />
+          </div>
+          <button
+            type="submit"
+            class="bg-blue-500 text-white rounded-md p-2 w-full"
+          >
+            Criar Usuário
+          </button>
+        </form>
+        <button
+          id="list-users"
+          class="bg-green-500 text-white rounded-md p-2 w-full mt-4"
+        >
+          Listar Todos os Usuários
+        </button>
+        <div class="mt-4">
+          <input
+            type="text"
+            id="search-email"
+            placeholder="Buscar por e-mail"
+            class="border border-gray-300 rounded-md p-2 w-full"
+          />
+          <button
+            id="search-button"
+            class="bg-yellow-500 text-white rounded-md p-2 w-full mt-2"
+          >
+            Buscar Usuário
+          </button>
+        </div>
+        <div id="user-list" class="mt-4"></div>
+        <div id="app" class="p-4"></div>
+          <button id="search-track-button" class="bg-blue-500 text-white p-2 rounded">Buscar Faixa</button>
+        <div id="track-list" class="mt-4 grid grid-cols-1 gap-4"></div> <!-- Contêiner para as capas dos álbuns -->
+    </div>
+      </section>
     </main>
-</body>
+    <script type="module">
+      document.addEventListener("DOMContentLoaded", () => {
+          class AlbumCover {
+              constructor(options) {
+              this.album = options.album;
+              this.track = options.track;
+              this.setActiveTrack = options.setActiveTrack;
+              this.activeTrack = options.activeTrack;
+              this.width = options.width || 200;
+              this.height = options.height || 200;
 
+              this.isPlaying = false;
+              this.cachedTrack = null;
+              this.audioElement = null;
+
+              this.init();
+              }
+
+          init() {
+              this.loadCachedTrack();
+              this.render();
+              }
+
+          loadCachedTrack() {
+              if (this.track) {
+              const cacheKey = `track-${this.track.id}`;
+              const storedTrack = localStorage.getItem(cacheKey);
+              if (storedTrack) {
+                  this.cachedTrack = JSON.parse(storedTrack);
+              } else {
+                  this.cachedTrack = this.track;
+                  localStorage.setItem(cacheKey, JSON.stringify(this.track));
+              }
+              }
+          }
+
+          togglePlay() {
+                if (this.isPlaying) {
+                    this.isPlaying = false;
+                    this.audioElement.pause();
+                } else {
+                    this.isPlaying = true;
+                    this.audioElement.play();
+                }
+                this.updatePlayButton();
+                }
+
+            updatePlayButton() {
+                 const playButton = this.container.querySelector(".play-button svg");
+                playButton.innerHTML = this.isPlaying
+                    ? '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z" />'
+                    : '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />';
+            }
+
+            render() {
+                const displayTrack = this.cachedTrack || this.track;
+                this.container = document.createElement("div");
+                this.container.className =
+                "relative bg-gradient-to-r from-blue-500 via-red-500 to-yellow-500 rounded-lg overflow-hidden shadow-lg transform transition-all duration-300 hover:scale-105 hover:shadow-xl p-4 group hover:bg-blue-200 border-4 border-dashed border-yellow-600";
+
+                this.container.innerHTML = `
+                    <div class="relative w-full h-full" aria-live="polite">
+                    <a href="https://open.spotify.com/track/${
+                        displayTrack?.spotify_id
+                    }" class="block relative w-full h-[300px] group-hover:opacity-90 transition-opacity duration-300 rounded-lg shadow-md">
+                        <img
+                          alt="${displayTrack?.title || "Album Cover"}"
+                          class="object-cover rounded-lg w-full h-full"
+                          src="${this.album.image}"
+                        />
+                    </a>
+                    ${
+                        displayTrack?.preview_url
+                        ? `<audio src="${displayTrack.preview_url}" preload="auto"></audio>`
+                        : ""
+                    }
+                    <button class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-lg transition-all duration-300 focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 play-button" aria-label="Play preview" title="Click to play or pause">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-white cursor-pointer" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                        </svg>
+                    </button>
+                    <a href="https://open.spotify.com/track/${
+                        displayTrack?.spotify_id
+                    }" target="_blank" class="absolute top-2 left-2 flex items-center space-x-2 bg-slate-200 shadow-md hover:shadow-lg transition-shadow duration-300 rounded-xl">
+                        <div class="badge">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="32" width="32" viewBox="-33.4974 -55.829 290.3108 334.974">
+                            <path d="M177.707 98.987c-35.992-21.375-95.36-23.34-129.719-12.912-5.519 1.674-11.353-1.44-13.024-6.958-1.672-5.521 1.439-11.352 6.96-13.029 39.443-11.972 105.008-9.66 146.443 14.936 4.964 2.947 6.59 9.356 3.649 14.31-2.944 4.963-9.359 6.6-14.31 3.653m-1.178 31.658c-2.525 4.098-7.883 5.383-11.975 2.867-30.005-18.444-75.762-23.788-111.262-13.012-4.603 1.39-9.466-1.204-10.864-5.8a8.717 8.717 0 015.805-10.856c40.553-12.307 90.968-6.347 125.432 14.833 4.092 2.52 5.38 7.88 2.864 11.968m-13.663 30.404a6.954 6.954 0 01-9.569 2.316c-26.22-16.025-59.223-19.644-98.09-10.766a6.955 6.955 0 01-8.331-5.232 6.95 6.95 0 015.233-8.334c42.533-9.722 79.017-5.538 108.448 12.446a6.96 6.96 0 012.31 9.57M111.656 0C49.992 0 0 49.99 0 111.656c0 61.672 49.992 111.66 111.657 111.66 61.668 0 111.659-49.988 111.659-111.66C223.316 49.991 173.326 0 111.657 0" fill="#1ed660" />
+                        </svg>
+                        </div>
+                    </a>
+                    <div class="absolute bottom-4 left-4 text-white">
+                        <h3 class="text-xl font-semibold">${displayTrack?.title}</h3>
+                        <p class="text-sm">${displayTrack?.artist_names?.join(", ")}</p>
+                    </div>
+                    </div>
+                `;
+
+                 this.audioElement = this.container.querySelector("audio");
+
+                const playButton = this.container.querySelector(".play-button");
+                playButton.addEventListener("click", this.togglePlay.bind(this));
+               }
+            }
+
+          const searchTrackButton = document.getElementById("search-track-button");
+          const trackListContainer = document.getElementById("track-list");
+
+          if (!searchTrackButton) {
+            console.error("Botão 'search-track-button' não encontrado.");
+            return;
+          }
+          if (!trackListContainer) {
+            console.error("Contêiner 'track-list' não encontrado.");
+            return;
+          }
+
+          searchTrackButton.addEventListener("click", async () => {
+              trackListContainer.innerHTML = "Loading..."; // Display loading message
+
+              try {
+                const response = await fetch(`/search-track`);
+                console.log("Resposta do servidor:", response);
+
+                if (!response.ok) {
+                  trackListContainer.innerHTML =
+                    "Error while fetching the track. Please try again later";
+                  throw new Error(`Erro ao buscar a faixa: ${response.statusText}`);
+                }
+
+                const trackData = await response.json();
+                console.log("Dados recebidos:", trackData);
+
+
+                if (trackData && trackData.tracks && trackData.tracks.length > 0) {
+                    trackListContainer.innerHTML = ""; // Limpa o "Loading..."
+                    // Iteramos sobre o array tracks, e para cada faixa criamos um AlbumCover
+                    trackData.tracks.map((track) => {
+                        const albumCover = new AlbumCover({
+                         album: {
+                            title: track?.name || "Título não disponível",
+                            image: track?.album_image || "placeholder.jpg",
+                            trackId: track?.id || "ID não disponível",
+                        },
+                        track: {
+                            title: track?.album_name || "asdasd",
+                            id: track?.id || "ID não disponível",
+                            preview_url: track?.preview_url || "",
+                            spotify_id: track?.spotify_id || "ID do Spotify não disponível",
+                            album_id: track?.id || "ID do Álbum não disponível",
+                            artist_names: track?.artist_names || ["Artista desconhecido"],
+                        },
+                        });
+
+                        // Adiciona cada AlbumCover ao contêiner
+                       trackListContainer.appendChild(albumCover.container);
+                  });
+              } else {
+                trackListContainer.innerHTML = "Track not found";
+              }
+            } catch (error) {
+              trackListContainer.innerHTML =
+                "An error ocurred. Check the console for details";
+              console.error("Erro ao buscar a faixa:", error);
+            }
+        });
+     });
+    </script>
+  </body>
 </html>
