@@ -70,19 +70,16 @@ Sinta-se à vontade para explorar a aplicação e testar suas funcionalidades!
 ## Estrutura do Projeto
 
 /projeto
-│
 ├── /client
 │ ├── albumCover.js
 │ ├── toast.js
 │ ├── styles.css
-│ ├── images
+│ ├── /images
 │ │ ├── Believing.png
 │ │ └── placeholder.jpg
 │ └── index.html
-│
 └── /server
 ├── server.ts
-└── ...
 
 ## Contribuição
 
