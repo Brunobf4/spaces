@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Página de Boas-Vindas</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="./styles.css" rel="stylesheet" />
     <script src="../app.js" type="module" defer></script>
   </head>
 
@@ -14,161 +14,399 @@
         Bem-vindo à nossa aplicação!
       </h1>
     </header>
+    <nav id="main-nav" class="bg-gray-800 text-white p-4" style="display: none">
+      <div class="container mx-auto flex justify-between items-center">
+        <div class="flex items-center space-x-4">
+          <span id="nav-user-name" class="font-semibold"></span>
+          <a
+            href="#"
+            id="search-track-button"
+            class="nav-link bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md transition-colors"
+          >
+            Buscar Faixa
+          </a>
+        </div>
+        <div class="flex items-center space-x-4">
+          <a
+            href="#"
+            id="create-post-btn"
+            class="nav-link bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md transition-colors"
+            >Criar Post</a
+          >
+
+          <details id="profile-dropdown" class="relative group">
+            <summary
+              class="hover:text-gray-300 focus:outline-none cursor-pointer"
+            >
+              Perfil
+              <span aria-hidden="true">▼</span>
+            </summary>
+            <ul
+              class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 hidden group-hover:block"
+            >
+              <li>
+                <a
+                  href="#"
+                  id="change-name-btn"
+                  class="block px-4 py-2 text-gray-800 hover:bg-gray-100 w-full text-left"
+                  >Alterar Nome</a
+                >
+              </li>
+              <li>
+                <a
+                  href="#"
+                  id="change-email-btn"
+                  class="block px-4 py-2 text-gray-800 hover:bg-gray-100 w-full text-left"
+                  >Alterar Email</a
+                >
+              </li>
+              <li>
+                <a
+                  href="#"
+                  id="change-password-btn"
+                  class="block px-4 py-2 text-gray-800 hover:bg-gray-100 w-full text-left"
+                  >Alterar Senha</a
+                >
+              </li>
+              <hr class="my-1 border-gray-200" />
+              <li>
+                <a
+                  href="#"
+                  id="logout-btn"
+                  class="block px-4 py-2 text-red-600 hover:bg-gray-100 w-full text-left"
+                  >Deslogar</a
+                >
+              </li>
+            </ul>
+          </details>
+        </div>
+      </div>
+    </nav>
+    <section
+      id="login-section"
+      class="bg-white p-8 rounded-xl shadow-lg border border-gray-200 max-w-md mx-auto mt-8"
+    >
+      <h2 class="text-2xl font-semibold mb-6 text-gray-800 text-center">
+        Login
+      </h2>
+      <form id="login-form" class="space-y-4">
+        <div>
+          <label
+            for="login-email"
+            class="block text-gray-700 text-sm font-medium mb-2"
+            >E-mail:</label
+          >
+          <input
+            type="email"
+            id="login-email"
+            name="email"
+            required
+            class="border border-gray-300 rounded-md p-2 w-full"
+          />
+        </div>
+        <div>
+          <label
+            for="login-senha"
+            class="block text-gray-700 text-sm font-medium mb-2"
+            >Senha:</label
+          >
+          <input
+            type="password"
+            id="login-senha"
+            name="senha"
+            required
+            class="border border-gray-300 rounded-md p-2 w-full"
+          />
+        </div>
+        <button
+          id="login-button"
+          class="bg-green-500 text-white rounded-md p-2 w-full hover:bg-green-600 transition-colors"
+        >
+          Entrar
+        </button>
+      </form>
+      <div class="mt-4 text-center">
+        <button
+          id="toggle-register"
+          class="text-blue-500 hover:text-blue-700 text-sm"
+        >
+          Não tem uma conta? Registre-se
+        </button>
+      </div>
+    </section>
+    <section
+      id="register-section"
+      class="bg-white p-8 rounded-xl shadow-lg border border-gray-200 max-w-md mx-auto mt-8"
+    >
+      <h2 class="text-2xl font-semibold mb-6 text-gray-800 text-center">
+        Registrar
+      </h2>
+      <form id="register-form" class="space-y-4">
+        <div>
+          <label
+            for="register-name"
+            class="block text-gray-700 text-sm font-medium mb-2"
+            >Nome:</label
+          >
+          <input
+            type="text"
+            id="register-name"
+            name="name"
+            required
+            class="border border-gray-300 rounded-md p-2 w-full"
+          />
+        </div>
+        <div>
+          <label
+            for="register-email"
+            class="block text-gray-700 text-sm font-medium mb-2"
+            >E-mail:</label
+          >
+          <input
+            type="email"
+            id="register-email"
+            name="email"
+            required
+            class="border border-gray-300 rounded-md p-2 w-full"
+          />
+        </div>
+        <div>
+          <label
+            for="register-senha"
+            class="block text-gray-700 text-sm font-medium mb-2"
+            >Senha:</label
+          >
+          <input
+            type="password"
+            id="register-senha"
+            name="senha"
+            required
+            class="border border-gray-300 rounded-md p-2 w-full"
+          />
+        </div>
+        <button
+          type="submit"
+          class="bg-blue-500 text-white rounded-md p-2 w-full hover:bg-blue-600 transition-colors"
+        >
+          Registrar
+        </button>
+      </form>
+      <div class="mt-4 text-center">
+        <button
+          id="toggle-login"
+          class="text-blue-500 hover:text-blue-700 text-sm"
+        >
+          Já tem uma conta? Faça login
+        </button>
+      </div>
+    </section>
     <main class="container mx-auto mt-10 p-6">
-      <section id="welcome-message" class="mb-8 text-center">
-        <p class="text-xl text-gray-700">
-          Olá, <span id="user-name" class="font-semibold"></span>! Estamos
-          felizes em tê-lo aqui.
-        </p>
-      </section>
-      <section
-        id="user-form"
-        class="bg-white p-8 rounded-xl shadow-lg border border-gray-200 max-w-md mx-auto"
-      >
-        <h2 class="text-2xl font-semibold mb-6 text-gray-800 text-center">
-          Criar Novo Usuário
-        </h2>
-        <form id="new-user-form" class="space-y-4">
+      <div id="main-content" style="display: none">
+        <!-- Seção de Músicas -->
+        <section
+          class="bg-white p-8 rounded-xl shadow-lg border border-gray-200 max-w-2xl mx-auto mb-8"
+        >
+          <h2 class="text-2xl font-semibold mb-6 text-gray-800 text-center">
+            Músicas
+          </h2>
+          <div id="track-list" class="grid grid-cols-1 gap-4">
+            <!-- Faixas serão inseridas aqui dinamicamente -->
+          </div>
+        </section>
+
+        <!-- Seção de Posts -->
+        <section
+          class="bg-white p-8 rounded-xl shadow-lg border border-gray-200 max-w-2xl mx-auto mt-8"
+        >
+          <h2 class="text-2xl font-semibold mb-6 text-gray-800 text-center">
+            Posts
+          </h2>
+          <div id="posts-container" class="space-y-6">
+            <!-- Posts serão inseridos aqui dinamicamente -->
+          </div>
+        </section>
+      </div>
+    </main>
+    <div
+      id="edit-profile-modal"
+      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden"
+    >
+      <div class="bg-white p-6 rounded-lg shadow-xl w-96">
+        <h3 id="modal-title" class="text-xl font-semibold mb-4">
+          Editar Perfil
+        </h3>
+        <form id="edit-profile-form" method="post" class="space-y-4">
+          <div id="modal-content">
+            <!-- O conteúdo será inserido dinamicamente -->
+          </div>
+          <div class="flex justify-end space-x-2 mt-4">
+            <button
+              type="button"
+              id="modal-cancel"
+              class="px-4 py-2 text-gray-600 hover:text-gray-800"
+            >
+              Cancelar
+            </button>
+            <button
+              type="submit"
+              class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+            >
+              Salvar
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div
+      id="post-modal"
+      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50"
+    >
+      <div class="bg-white p-8 rounded-xl shadow-lg max-w-2xl w-full mx-4">
+        <div class="flex justify-between items-center mb-6">
+          <h2 class="text-2xl font-semibold text-gray-800">Criar Novo Post</h2>
+          <button
+            id="close-post-modal"
+            class="text-gray-500 hover:text-gray-700"
+          >
+            <svg
+              class="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
+        </div>
+        <form id="post-form" class="space-y-4">
           <div>
             <label
-              for="name"
+              for="post-title"
               class="block text-gray-700 text-sm font-medium mb-2"
-              >Nome:</label
+              >Título:</label
             >
             <input
               type="text"
-              id="name"
-              name="name"
+              id="post-title"
+              name="title"
               required
               class="border border-gray-300 rounded-md p-2 w-full"
             />
           </div>
           <div>
             <label
-              for="email"
+              for="post-content"
               class="block text-gray-700 text-sm font-medium mb-2"
-              >E-mail:</label
+              >Conteúdo:</label
             >
-            <input
-              type="email"
-              id="email"
-              name="email"
-              required
-              class="border border-gray-300 rounded-md p-2 w-full"
-            />
+            <textarea
+              id="post-content"
+              name="content"
+              rows="4"
+              class="border border-gray-300 rounded-md p-2 w-full resize-none"
+            ></textarea>
           </div>
           <div>
             <label
-              for="senha"
+              for="post-media"
               class="block text-gray-700 text-sm font-medium mb-2"
-              >Senha:</label
+              >Mídia:</label
             >
             <input
-              type="password"
-              id="senha"
-              name="senha"
-              required
+              type="file"
+              id="post-media"
+              name="media"
+              accept="audio/*,video/*,image/*,text/*"
               class="border border-gray-300 rounded-md p-2 w-full"
             />
           </div>
-          <button
-            type="submit"
-            class="bg-blue-500 text-white rounded-md p-2 w-full"
-          >
-            Criar Usuário
-          </button>
+          <div class="flex justify-end space-x-2 mt-6">
+            <button
+              type="button"
+              id="cancel-post"
+              class="px-4 py-2 text-gray-600 hover:text-gray-800"
+            >
+              Cancelar
+            </button>
+            <button
+              type="submit"
+              class="bg-blue-500 text-white rounded-md px-4 py-2 hover:bg-blue-600 transition-colors"
+            >
+              Publicar
+            </button>
+          </div>
         </form>
-        <button
-          id="list-users"
-          class="bg-green-500 text-white rounded-md p-2 w-full mt-4"
-        >
-          Listar Todos os Usuários
-        </button>
-        <div class="mt-4">
-          <input
-            type="text"
-            id="search-email"
-            placeholder="Buscar por e-mail"
-            class="border border-gray-300 rounded-md p-2 w-full"
-          />
-          <button
-            id="search-button"
-            class="bg-yellow-500 text-white rounded-md p-2 w-full mt-2"
-          >
-            Buscar Usuário
-          </button>
-        </div>
-        <div id="user-list" class="mt-4"></div>
-        <div id="app" class="p-4"></div>
-          <button id="search-track-button" class="bg-blue-500 text-white p-2 rounded">Buscar Faixa</button>
-        <div id="track-list" class="mt-4 grid grid-cols-1 gap-4"></div> <!-- Contêiner para as capas dos álbuns -->
+      </div>
     </div>
-      </section>
-    </main>
     <script type="module">
       document.addEventListener("DOMContentLoaded", () => {
-          class AlbumCover {
-              constructor(options) {
-              this.album = options.album;
-              this.track = options.track;
-              this.setActiveTrack = options.setActiveTrack;
-              this.activeTrack = options.activeTrack;
-              this.width = options.width || 200;
-              this.height = options.height || 200;
+        class AlbumCover {
+          constructor(options) {
+            this.album = options.album;
+            this.track = options.track;
+            this.setActiveTrack = options.setActiveTrack;
+            this.activeTrack = options.activeTrack;
+            this.width = options.width || 200;
+            this.height = options.height || 200;
 
-              this.isPlaying = false;
-              this.cachedTrack = null;
-              this.audioElement = null;
+            this.isPlaying = false;
+            this.cachedTrack = null;
+            this.audioElement = null;
 
-              this.init();
-              }
+            this.init();
+          }
 
           init() {
-              this.loadCachedTrack();
-              this.render();
-              }
+            this.loadCachedTrack();
+            this.render();
+          }
 
           loadCachedTrack() {
-              if (this.track) {
+            if (this.track) {
               const cacheKey = `track-${this.track.id}`;
               const storedTrack = localStorage.getItem(cacheKey);
               if (storedTrack) {
-                  this.cachedTrack = JSON.parse(storedTrack);
+                this.cachedTrack = JSON.parse(storedTrack);
               } else {
-                  this.cachedTrack = this.track;
-                  localStorage.setItem(cacheKey, JSON.stringify(this.track));
+                this.cachedTrack = this.track;
+                localStorage.setItem(cacheKey, JSON.stringify(this.track));
               }
-              }
+            }
           }
 
           togglePlay() {
-                if (this.isPlaying) {
-                    this.isPlaying = false;
-                    this.audioElement.pause();
-                } else {
-                    this.isPlaying = true;
-                    this.audioElement.play();
-                }
-                this.updatePlayButton();
-                }
-
-            updatePlayButton() {
-                 const playButton = this.container.querySelector(".play-button svg");
-                playButton.innerHTML = this.isPlaying
-                    ? '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z" />'
-                    : '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />';
+            if (this.isPlaying) {
+              this.isPlaying = false;
+              this.audioElement.pause();
+            } else {
+              this.isPlaying = true;
+              this.audioElement.play();
             }
+            this.updatePlayButton();
+          }
 
-            render() {
-                const displayTrack = this.cachedTrack || this.track;
-                this.container = document.createElement("div");
-                this.container.className =
-                "relative bg-gradient-to-r from-blue-500 via-red-500 to-yellow-500 rounded-lg overflow-hidden shadow-lg transform transition-all duration-300 hover:scale-105 hover:shadow-xl p-4 group hover:bg-blue-200 border-4 border-dashed border-yellow-600";
+          updatePlayButton() {
+            const playButton = this.container.querySelector(".play-button svg");
+            playButton.innerHTML = this.isPlaying
+              ? '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z" />'
+              : '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />';
+          }
 
-                this.container.innerHTML = `
+          render() {
+            const displayTrack = this.cachedTrack || this.track;
+            this.container = document.createElement("div");
+            this.container.className =
+              "relative bg-gradient-to-r from-blue-500 via-red-500 to-yellow-500 rounded-lg overflow-hidden shadow-lg transform transition-all duration-300 hover:scale-105 hover:shadow-xl p-4 group hover:bg-blue-200 border-4 border-dashed border-yellow-600";
+
+            this.container.innerHTML = `
                     <div class="relative w-full h-full" aria-live="polite">
                     <a href="https://open.spotify.com/track/${
-                        displayTrack?.spotify_id
+                      displayTrack?.spotify_id
                     }" class="block relative w-full h-[300px] group-hover:opacity-90 transition-opacity duration-300 rounded-lg shadow-md">
                         <img
                           alt="${displayTrack?.title || "Album Cover"}"
@@ -177,7 +415,7 @@
                         />
                     </a>
                     ${
-                        displayTrack?.preview_url
+                      displayTrack?.preview_url
                         ? `<audio src="${displayTrack.preview_url}" preload="auto"></audio>`
                         : ""
                     }
@@ -187,7 +425,7 @@
                         </svg>
                     </button>
                     <a href="https://open.spotify.com/track/${
-                        displayTrack?.spotify_id
+                      displayTrack?.spotify_id
                     }" target="_blank" class="absolute top-2 left-2 flex items-center space-x-2 bg-slate-200 shadow-md hover:shadow-lg transition-shadow duration-300 rounded-xl">
                         <div class="badge">
                         <svg xmlns="http://www.w3.org/2000/svg" height="32" width="32" viewBox="-33.4974 -55.829 290.3108 334.974">
@@ -196,81 +434,89 @@
                         </div>
                     </a>
                     <div class="absolute bottom-4 left-4 text-white">
-                        <h3 class="text-xl font-semibold">${displayTrack?.title}</h3>
-                        <p class="text-sm">${displayTrack?.artist_names?.join(", ")}</p>
+                        <h3 class="text-xl font-semibold">${
+                          displayTrack?.title
+                        }</h3>
+                        <p class="text-sm">${displayTrack?.artist_names?.join(
+                          ", "
+                        )}</p>
                     </div>
                     </div>
                 `;
 
-                 this.audioElement = this.container.querySelector("audio");
+            this.audioElement = this.container.querySelector("audio");
 
-                const playButton = this.container.querySelector(".play-button");
-                playButton.addEventListener("click", this.togglePlay.bind(this));
-               }
-            }
-
-          const searchTrackButton = document.getElementById("search-track-button");
-          const trackListContainer = document.getElementById("track-list");
-
-          if (!searchTrackButton) {
-            console.error("Botão 'search-track-button' não encontrado.");
-            return;
+            const playButton = this.container.querySelector(".play-button");
+            playButton.addEventListener("click", this.togglePlay.bind(this));
           }
-          if (!trackListContainer) {
-            console.error("Contêiner 'track-list' não encontrado.");
-            return;
-          }
+        }
 
-          searchTrackButton.addEventListener("click", async () => {
-              trackListContainer.innerHTML = "Loading..."; // Display loading message
+        const searchTrackButton = document.getElementById(
+          "search-track-button"
+        );
+        const trackListContainer = document.getElementById("track-list");
 
-              try {
-                const response = await fetch(`/search-track`);
-                console.log("Resposta do servidor:", response);
+        if (!searchTrackButton) {
+          console.error("Botão 'search-track-button' não encontrado.");
+          return;
+        }
+        if (!trackListContainer) {
+          console.error("Contêiner 'track-list' não encontrado.");
+          return;
+        }
 
-                if (!response.ok) {
-                  trackListContainer.innerHTML =
-                    "Error while fetching the track. Please try again later";
-                  throw new Error(`Erro ao buscar a faixa: ${response.statusText}`);
-                }
+        searchTrackButton.addEventListener("click", async () => {
+          trackListContainer.innerHTML = "Loading..."; // Display loading message
 
-                const trackData = await response.json();
-                console.log("Dados recebidos:", trackData);
+          try {
+            const response = await fetch(`/search-track`);
+            console.log("Resposta do servidor:", response);
 
-
-                if (trackData && trackData.tracks && trackData.tracks.length > 0) {
-                    trackListContainer.innerHTML = ""; // Limpa o "Loading..."
-                    // Iteramos sobre o array tracks, e para cada faixa criamos um AlbumCover
-                    trackData.tracks.map((track) => {
-                        const albumCover = new AlbumCover({
-                         album: {
-                            title: track?.name || "Título não disponível",
-                            image: track?.album_image || "placeholder.jpg",
-                            trackId: track?.id || "ID não disponível",
-                        },
-                        track: {
-                            title: track?.album_name || "asdasd",
-                            id: track?.id || "ID não disponível",
-                            preview_url: track?.preview_url || "",
-                            spotify_id: track?.spotify_id || "ID do Spotify não disponível",
-                            album_id: track?.id || "ID do Álbum não disponível",
-                            artist_names: track?.artist_names || ["Artista desconhecido"],
-                        },
-                        });
-
-                        // Adiciona cada AlbumCover ao contêiner
-                       trackListContainer.appendChild(albumCover.container);
-                  });
-              } else {
-                trackListContainer.innerHTML = "Track not found";
-              }
-            } catch (error) {
+            if (!response.ok) {
               trackListContainer.innerHTML =
-                "An error ocurred. Check the console for details";
-              console.error("Erro ao buscar a faixa:", error);
+                "Error while fetching the track. Please try again later";
+              throw new Error(`Erro ao buscar a faixa: ${response.statusText}`);
             }
+
+            const trackData = await response.json();
+            console.log("Dados recebidos:", trackData);
+
+            if (trackData && trackData.tracks && trackData.tracks.length > 0) {
+              trackListContainer.innerHTML = ""; // Limpa o "Loading..."
+              // Iteramos sobre o array tracks, e para cada faixa criamos um AlbumCover
+              trackData.tracks.map((track) => {
+                const albumCover = new AlbumCover({
+                  album: {
+                    title: track?.name || "Título não disponível",
+                    image: track?.album_image || "placeholder.jpg",
+                    trackId: track?.id || "ID não disponível",
+                  },
+                  track: {
+                    title: track?.album_name || "asdasd",
+                    id: track?.id || "ID não disponível",
+                    preview_url: track?.preview_url || "",
+                    spotify_id:
+                      track?.spotify_id || "ID do Spotify não disponível",
+                    album_id: track?.id || "ID do Álbum não disponível",
+                    artist_names: track?.artist_names || [
+                      "Artista desconhecido",
+                    ],
+                  },
+                });
+
+                // Adiciona cada AlbumCover ao contêiner
+                trackListContainer.appendChild(albumCover.container);
+              });
+            } else {
+              trackListContainer.innerHTML = "Track not found";
+            }
+          } catch (error) {
+            trackListContainer.innerHTML =
+              "An error ocurred. Check the console for details";
+            console.error("Erro ao buscar a faixa:", error);
+          }
         });
-     });
+      });
     </script>
   </body>
 </html>

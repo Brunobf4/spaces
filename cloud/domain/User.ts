@@ -4,6 +4,9 @@ import fs from "fs";
 import { dirname } from "path";
 import { fileURLToPath } from "url";
 
+import bcrypt from "bcrypt";
+
+const JWT_SECRET = "sua_chave_secreta_aqui"; // Mantenha isso seguro!
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
@@ -35,18 +38,23 @@ export default class User {
     const dbPath = path.join(dbDir, "database.db");
 
     try {
+      console.log("Iniciando conexão com o banco de dados...");
+      console.log("Diretório do banco:", dbDir);
+      console.log("Caminho do banco:", dbPath);
+
       // Use fs.promises for async file operations
       if (!fs.existsSync(dbDir)) {
         await fs.promises.mkdir(dbDir, { recursive: true });
+        console.log("Diretório do banco criado:", dbDir);
       }
 
       if (!fs.existsSync(dbPath)) {
         await fs.promises.writeFile(dbPath, "");
+        console.log("Arquivo do banco criado:", dbPath);
       }
 
       this._db = new Database(dbPath);
       console.log("Conexão com o banco de dados estabelecida com sucesso!");
-      this.createTable();
     } catch (error) {
       console.error("Erro ao conectar ao banco de dados:", error);
       throw error;
@@ -71,29 +79,36 @@ export default class User {
     }
   }
 
+  // Método para criar hash de senha
+  static async hashPassword(password: string): Promise<string> {
+    return bcrypt.hash(password, 10);
+  }
+
+  // Método para verificar senha
+  static async verifyPassword(
+    password: string,
+    hash: string
+  ): Promise<boolean> {
+    return bcrypt.compare(password, hash);
+  }
+
+  // Atualize o método createUser para usar hash
   static async createUser({ name, email, senha }: IUser): Promise<User> {
     if (!this._db) {
       await this.initializeDatabase();
     }
     try {
-      const existingUser = this._db
-        ?.prepare("SELECT * FROM users WHERE email = $email")
-        .get({ $email: email });
-
-      if (existingUser) {
-        throw new Error("E-mail já está em uso.");
-      }
-
+      const hashedPassword = await this.hashPassword(senha);
       const insertStatement = this._db?.prepare(
         `INSERT INTO users (name, email, senha) VALUES ($name, $email, $senha)`
       );
       const info = insertStatement?.run({
         $name: name,
         $email: email,
-        $senha: senha,
+        $senha: hashedPassword,
       });
       console.log(`Usuário adicionado com ID: ${info.lastInsertRowid}`);
-      return new User(name, email, senha);
+      return new User(name, email, hashedPassword);
     } catch (err) {
       console.error("Erro ao inserir usuário:", err);
       throw err;
@@ -132,6 +147,189 @@ export default class User {
       return rows.map((row) => new User(row.name, row.email, row.senha));
     } catch (err) {
       console.error("Erro ao listar usuários:", err);
+      throw err;
+    }
+  }
+
+  // Método para atualizar nome
+  static async updateName(email: string, newName: string): Promise<boolean> {
+    if (!this._db) {
+      await this.initializeDatabase();
+    }
+    try {
+      const stmt = this._db?.prepare(
+        "UPDATE users SET name = $name WHERE email = $email"
+      );
+      const result = stmt.run({
+        $name: newName,
+        $email: email,
+      });
+      return result.changes > 0;
+    } catch (err) {
+      console.error("Erro ao atualizar nome:", err);
+      throw err;
+    }
+  }
+
+  // Método para atualizar email
+  static async updateEmail(
+    currentEmail: string,
+    newEmail: string
+  ): Promise<boolean> {
+    if (!this._db) {
+      await this.initializeDatabase();
+    }
+    try {
+      const stmt = this._db?.prepare(
+        "UPDATE users SET email = $newEmail WHERE email = $currentEmail"
+      );
+      const result = stmt.run({
+        $newEmail: newEmail,
+        $currentEmail: currentEmail,
+      });
+      return result.changes > 0;
+    } catch (err) {
+      console.error("Erro ao atualizar email:", err);
+      throw err;
+    }
+  }
+
+  // Método para atualizar senha
+  static async updatePassword(
+    email: string,
+    currentPassword: string,
+    newPassword: string
+  ): Promise<boolean> {
+    if (!this._db) {
+      await this.initializeDatabase();
+    }
+    try {
+      // Primeiro, verifica se a senha atual está correta
+      const user = await this.getUserByEmail(email);
+      if (!user || !(await this.verifyPassword(currentPassword, user.senha))) {
+        return false;
+      }
+
+      // Se a senha atual estiver correta, atualiza para a nova senha
+      const hashedPassword = await this.hashPassword(newPassword);
+      const stmt = this._db?.prepare(
+        "UPDATE users SET senha = $senha WHERE email = $email"
+      );
+      const result = stmt.run({
+        $senha: hashedPassword,
+        $email: email,
+      });
+      return result.changes > 0;
+    } catch (err) {
+      console.error("Erro ao atualizar senha:", err);
+      throw err;
+    }
+  }
+
+  static createPostsTable(): void {
+    const createTableSQL = `
+      CREATE TABLE IF NOT EXISTS posts (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_email TEXT NOT NULL,
+        title TEXT NOT NULL,
+        content TEXT,
+        media_type TEXT NOT NULL,
+        media_data TEXT,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (user_email) REFERENCES users(email)
+      );
+    `;
+    try {
+      if (!this._db) throw new Error("Database not initialized");
+      this._db.exec(createTableSQL);
+      console.log("Tabela 'posts' criada ou já existe.");
+    } catch (err) {
+      console.error("Erro ao criar tabela de posts:", err);
+      throw err;
+    }
+  }
+
+  static async initializeTables(): Promise<void> {
+    try {
+      await this.initializeDatabase();
+      this.createTable();
+      this.createPostsTable();
+      console.log("Todas as tabelas foram inicializadas com sucesso!");
+    } catch (error) {
+      console.error("Erro ao inicializar tabelas:", error);
+      throw error;
+    }
+  }
+
+  static async createPost(
+    userEmail: string,
+    post: {
+      title: string;
+      content?: string;
+      mediaType: "text" | "audio" | "video" | "mixed";
+      mediaData?: string;
+    }
+  ): Promise<any> {
+    if (!this._db) {
+      await this.initializeDatabase();
+    }
+    try {
+      const stmt = this._db?.prepare(`
+        INSERT INTO posts (user_email, title, content, media_type, media_data)
+        VALUES ($userEmail, $title, $content, $mediaType, $mediaData)
+      `);
+
+      const result = stmt.run({
+        $userEmail: userEmail,
+        $title: post.title,
+        $content: post.content || null,
+        $mediaType: post.mediaType,
+        $mediaData: post.mediaData || null,
+      });
+
+      return {
+        id: result.lastInsertRowid,
+        ...post,
+      };
+    } catch (err) {
+      console.error("Erro ao criar post:", err);
+      throw err;
+    }
+  }
+
+  static async getUserPosts(userEmail: string): Promise<any[]> {
+    if (!this._db) {
+      await this.initializeDatabase();
+    }
+    try {
+      const stmt = this._db?.prepare(`
+        SELECT * FROM posts 
+        WHERE user_email = $userEmail 
+        ORDER BY created_at DESC
+      `);
+
+      return stmt.all({ $userEmail: userEmail });
+    } catch (err) {
+      console.error("Erro ao buscar posts do usuário:", err);
+      throw err;
+    }
+  }
+
+  static async getAllPosts(): Promise<any[]> {
+    if (!this._db) {
+      await this.initializeDatabase();
+    }
+    try {
+      const stmt = this._db?.prepare(`
+        SELECT p.*, u.name as author_name 
+        FROM posts p
+        JOIN users u ON p.user_email = u.email
+        ORDER BY p.created_at DESC
+      `);
+
+      return stmt.all();
+    } catch (err) {
+      console.error("Erro ao buscar todos os posts:", err);
       throw err;
     }
   }
