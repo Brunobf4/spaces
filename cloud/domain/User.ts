@@ -1,4 +1,4 @@
-import sqlite3, { Database } from "sqlite3";
+import sqlite3, { Database, type } from "sqlite3";
 import path from "path";
 import fs from "fs";
 import { dirname } from "path";
@@ -18,7 +18,7 @@ export default class User {
   private _name: string;
   private _email: string;
   private _senha: string;
-  private static _db: Database | null = null;
+  private static _db: Database | null;
 
   constructor(name: string, email: string, senha: string) {
     Object.assign(this, { _name: name, _email: email, _senha: senha });
@@ -26,24 +26,36 @@ export default class User {
   }
 
   static async initializeDatabase(): Promise<void> {
-    const dbPath = path.resolve(__dirname, "/db/database.db");
+    const dbDir = path.resolve(__dirname, "db");
+    const dbPath = path.join(dbDir, "database.db");
+
+    if (!fs.existsSync(dbDir)) {
+      fs.mkdirSync(dbDir, { recursive: true });
+    }
 
     if (!fs.existsSync(dbPath)) {
       fs.writeFileSync(dbPath, "");
     }
 
-    if (!this._db) {
-      this._db = new sqlite3.Database(dbPath, (err) => {
-        if (err) {
-          console.error("Erro ao conectar ao banco de dados:", err.message);
-          throw err;
-        }
-        console.log("Conexão com o banco de dados estabelecida com sucesso!");
-        this.createTable();
-      });
-    } else {
-      console.log("Banco de dados já está conectado.");
-    }
+    return new Promise<void>((resolve, reject) => {
+      if (!this._db) {
+        this._db = new sqlite3.Database(dbPath, (err) => {
+          if (err) {
+            console.error("Erro ao conectar ao banco de dados:", err.message);
+            reject(err);
+          } else {
+            console.log(
+              "Conexão com o banco de dados estabelecida com sucesso!"
+            );
+            this.createTable();
+            resolve();
+          }
+        });
+      } else {
+        console.log("Banco de dados já está conectado.");
+        resolve();
+      }
+    });
   }
 
   static createTable(): void {
@@ -68,19 +80,34 @@ export default class User {
     if (!this._db) {
       await this.initializeDatabase();
     }
+
     return new Promise((resolve, reject) => {
-      this._db?.run(
-        `INSERT INTO users (name, email, senha) VALUES (?, ?, ?)`,
-        [name, email, senha],
-        function (err) {
+      this._db.get(
+        `SELECT * FROM users WHERE email = ?`,
+        [email],
+        (err, row) => {
           if (err) {
-            console.error("Erro ao inserir usuário:", err.message);
-            reject(err);
-          } else {
-            console.log(`Usuário adicionado com ID: ${this.lastID}`);
-            const newUser = new User(name, email, senha);
-            resolve(newUser);
+            console.error("Erro ao verificar e-mail:", err.message);
+            return reject(err);
           }
+          if (row) {
+            return reject(new Error("E-mail já está em uso."));
+          }
+
+          this._db.run(
+            `INSERT INTO users (name, email, senha) VALUES (?, ?, ?)`,
+            [name, email, senha],
+            function (err) {
+              if (err) {
+                console.error("Erro ao inserir usuário:", err.message);
+                reject(err);
+              } else {
+                console.log(`Usuário adicionado com ID: ${this.lastID}`);
+                const newUser = new User(name, email, senha);
+                resolve(newUser);
+              }
+            }
+          );
         }
       );
     });
