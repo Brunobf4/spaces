@@ -1,7 +1,8 @@
 {
   "scripts": {
     "ct:css": "tailwindcss -i ./cloud/style/tailwind.css -o client/styles.css --watch",
-    "ship": "bun run ./cloud/server.ts"
+    "ship": "bun run ./cloud/server.ts",
+    "test": "node cloud/test/toast.test.node.js"
   },
   "devDependencies": {
     "@types/express": "^5.0.0",
@@ -13,6 +14,7 @@
   },
   "dependencies": {
     "express": "^4.21.2",
+    "jsdom": "^25.0.1",
     "sqlite3": "^5.1.7"
   },
   "type": "module"
