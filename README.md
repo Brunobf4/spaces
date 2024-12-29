@@ -1,6 +1,21 @@
 # Nome do Projeto
+Spaces
 
-Uma breve descrição do que o projeto faz e seu propósito.
+## Acesso à Aplicação
+
+Você pode acessar a aplicação através do seguinte endereço IP:
+
+- **URL**: [http://147.79.83.59:8080/](http://147.79.83.59:8080/)
+
+### Funcionalidades
+
+- **Criar Novo Usuário**: Permite que você crie um novo usuário fornecendo nome, e-mail e senha.
+- **Listar Todos os Usuários**: Exibe uma lista de todos os usuários cadastrados.
+- **Buscar Usuário**: Permite buscar um usuário específico.
+- **Buscar Faixa**: Funcionalidade para buscar faixas de música.
+
+Sinta-se à vontade para explorar a aplicação e testar suas funcionalidades!
+
 
 ## Índice
 
