@@ -1,9 +1,10 @@
-import express from "express";
+import express, { Request, Response } from "express";
 import path from "path";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
-import User from "./user.js";
+import User from "./domain/User";
 
+// Criando o app e definindo a porta
 const app = express();
 const port = 8080;
 
@@ -11,25 +12,27 @@ const port = 8080;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-// Caminho correto para a pasta 'client' (apenas uma vez)
-const distPath = path.resolve(__dirname); // Caminho ajustado
+// Caminho correto para o arquivo 'index.html' na pasta 'client'
+const indexPath = path.resolve(__dirname, "../client/index.html"); // Ajuste aqui para apontar para o arquivo correto
+
+// Servir arquivos estáticos da pasta 'client'
 
 // Servir arquivos estáticos da pasta 'client'
 app.use(express.json()); // Para analisar JSON
 app.use(express.urlencoded({ extended: true })); // Para dados de formulários
-app.use(express.static(distPath));
+app.use(express.static(path.resolve(__dirname, "../client"))); // Serve arquivos estáticos da pasta 'client'
 
 // Responder com o arquivo principal (ex.: index.html)
-app.get("/", (req, res) => {
+app.get("/", (req: Request, res: Response) => {
   res.setHeader(
     "Content-Security-Policy",
     "default-src 'self'; font-src 'self' data:; style-src 'self' 'unsafe-inline';"
   );
-  res.sendFile(path.join(distPath, "index.html")); // Corrigir para apontar para o arquivo correto
+  res.sendFile(indexPath); // Corrigir para apontar para o arquivo correto
 });
 
 // Rota para criar um novo usuário
-app.post("/create-user", async (req, res) => {
+app.post("/create-user", async (req: Request, res: Response) => {
   const { name, email, senha } = req.body;
   console.log(req.body);
   try {
@@ -44,7 +47,7 @@ app.post("/create-user", async (req, res) => {
 });
 
 // Rota para listar todos os usuários
-app.get("/list-users", async (req, res) => {
+app.get("/list-users", async (req: Request, res: Response) => {
   try {
     const users = await User.getAllUsers();
     res.status(200).json(users);
@@ -55,10 +58,10 @@ app.get("/list-users", async (req, res) => {
 });
 
 // Rota para buscar usuário por e-mail
-app.get("/search-user", async (req, res) => {
+app.get("/search-user", async (req: Request, res: Response) => {
   const { email } = req.query;
   try {
-    const user = await User.getUserByEmail(email);
+    const user = await User.getUserByEmail(email as string);
     if (user) {
       res.status(200).json(user);
     } else {
@@ -70,6 +73,7 @@ app.get("/search-user", async (req, res) => {
   }
 });
 
+// Inicia o servidor
 app.listen(port, () => {
   console.log(`Servidor rodando em http://127.0.0.1:${port}`);
 });

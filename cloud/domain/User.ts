@@ -1,4 +1,4 @@
-import sqlite3 from "sqlite3";
+import sqlite3, { Database } from "sqlite3";
 import path from "path";
 import fs from "fs";
 import { dirname } from "path";
@@ -7,14 +7,26 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
+// Definição de tipo para os parâmetros do usuário
+interface IUser {
+  name: string;
+  email: string;
+  senha: string;
+}
+
 export default class User {
-  constructor(name, email, senha) {
+  private _name: string;
+  private _email: string;
+  private _senha: string;
+  private static _db: Database | null = null;
+
+  constructor(name: string, email: string, senha: string) {
     Object.assign(this, { _name: name, _email: email, _senha: senha });
     Object.freeze(this);
   }
 
-  static async initializeDatabase() {
-    const dbPath = path.resolve(__dirname, "domain/db/database.db");
+  static async initializeDatabase(): Promise<void> {
+    const dbPath = path.resolve(__dirname, "/db/database.db");
 
     if (!fs.existsSync(dbPath)) {
       fs.writeFileSync(dbPath, "");
@@ -34,7 +46,7 @@ export default class User {
     }
   }
 
-  static createTable() {
+  static createTable(): void {
     const createTableSQL = `
       CREATE TABLE IF NOT EXISTS users (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -43,7 +55,7 @@ export default class User {
         senha TEXT NOT NULL
       );
     `;
-    this._db.run(createTableSQL, (err) => {
+    this._db?.run(createTableSQL, (err) => {
       if (err) {
         console.error("Erro ao criar tabela:", err.message);
       } else {
@@ -52,12 +64,12 @@ export default class User {
     });
   }
 
-  static async createUser({ name, email, senha }) {
+  static async createUser({ name, email, senha }: IUser): Promise<User> {
     if (!this._db) {
       await this.initializeDatabase();
     }
     return new Promise((resolve, reject) => {
-      this._db.run(
+      this._db?.run(
         `INSERT INTO users (name, email, senha) VALUES (?, ?, ?)`,
         [name, email, senha],
         function (err) {
@@ -75,12 +87,12 @@ export default class User {
   }
 
   // Método para listar um usuário pelo e-mail
-  static async getUserByEmail(email) {
+  static async getUserByEmail(email: string): Promise<User | null> {
     if (!this._db) {
       await this.initializeDatabase();
     }
     return new Promise((resolve, reject) => {
-      this._db.get(
+      this._db?.get(
         `SELECT * FROM users WHERE email = ?`,
         [email],
         (err, row) => {
@@ -101,12 +113,12 @@ export default class User {
   }
 
   // Método para listar todos os usuários
-  static async getAllUsers() {
+  static async getAllUsers(): Promise<User[]> {
     if (!this._db) {
       await this.initializeDatabase();
     }
     return new Promise((resolve, reject) => {
-      this._db.all(`SELECT * FROM users`, (err, rows) => {
+      this._db?.all(`SELECT * FROM users`, (err, rows) => {
         if (err) {
           console.error("Erro ao listar usuários:", err.message);
           reject(err);
@@ -120,15 +132,15 @@ export default class User {
     });
   }
 
-  get name() {
+  get name(): string {
     return this._name;
   }
 
-  get email() {
+  get email(): string {
     return this._email;
   }
 
-  get senha() {
+  get senha(): string {
     return this._senha;
   }
 }

@@ -1,7 +1,7 @@
 {
   "scripts": {
-    "build:css": "tailwindcss -i ./client/styles/tailwind.css -o client/client/styles.css --watch",
-    "build:ts": "npx tsc"
+    "ct:css": "tailwindcss -i ./cloud/style/tailwind.css -o client/styles.css --watch",
+    "ship": "bun run ./cloud/server.ts"
   },
   "devDependencies": {
     "@types/express": "^5.0.0",
