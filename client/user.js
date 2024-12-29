@@ -10,9 +10,6 @@ const __dirname = dirname(__filename);
 export default class User {
   constructor(name, email, senha) {
     Object.assign(this, { _name: name, _email: email, _senha: senha });
-    this._name = name;
-    this._email = email;
-    this._senha = senha;
     Object.freeze(this);
   }
 
