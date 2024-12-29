@@ -16,18 +16,7 @@ This project is a simple user management application built using Node.js, Expres
 
 The project is structured as follows:
 Use code with caution.
-Markdown
-├── domain
-│ └── db
-│ └── database.db # Database file created at runtime.
-├── node_modules/
-├── index.html # HTML main page.
-├── app.js # Main client-side JavaScript.
-├── server.js # Express server configuration.
-├── styles.css # CSS rules file.
-├── package.json
-├── package-lock.json
-└── user.js # User class and SQLite interface.
+
 
 -   `index.html`: The main HTML file that provides the user interface for the application.
 -   `app.js`: The main JavaScript file for client-side logic, including form handling and API calls.
@@ -44,28 +33,6 @@ The following endpoints are available on the server:
 
 -   **GET `/`**: Serves the main `index.html` file.
 -   **POST `/create-user`**: Creates a new user. Expects a JSON body with `name`, `email`, and `senha`.
-    *   **Request Body:**
-        ```json
-        {
-        "name": "John Doe",
-        "email": "john.doe@example.com",
-        "senha": "securePassword123"
-        }
-        ```
-    *   **Response:**
-        *   201 Created: `{ "message": "Usuário John Doe criado com sucesso!" }`
-        *   500 Internal Server Error: `{ "message": "Erro ao criar usuário." }`
--   **GET `/list-users`**: Retrieves a list of all users.
-    *   **Response:**
-        *   200 OK: `[{"name": "John Doe", "email": "john.doe@example.com", "senha": "securePassword123"}]`
-        *   500 Internal Server Error: `{ "message": "Erro ao listar usuários." }`
--   **GET `/search-user?email={email}`**: Searches for a user by email.
-    *   **Query Parameter:**
-        -   `email`: The email address to search for.
-    *   **Response:**
-        *   200 OK: `{"name": "John Doe", "email": "john.doe@example.com", "senha": "securePassword123"}`
-        *   404 Not Found: `{ "message": "Usuário não encontrado." }`
-        *   500 Internal Server Error: `{ "message": "Erro ao buscar usuário." }`
 
 ## Client-Side Interaction
 
@@ -92,7 +59,7 @@ All form submission and button clicks are handled by the `app.js` file, which se
 3.  **Run the Server:**
 
     ```bash
-    node server.js
+    node ./client/server.js
     ```
 4.  **Access the Application**
     Open your web browser and navigate to [http://127.0.0.1:8080](http://127.0.0.1:8080)
