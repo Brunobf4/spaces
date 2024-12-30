@@ -26,7 +26,7 @@ class LoginHandler {
     const senha = document.getElementById("login-senha").value;
     const authToken = localStorage.getItem("authToken");
     if (authToken) {
-      updateSectionsVisibility(true);
+      updateSectionsVisibility(true, false);
       return;
     }
     try {

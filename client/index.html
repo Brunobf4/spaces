@@ -345,6 +345,32 @@
     </div>
     <script type="module">
       document.addEventListener("DOMContentLoaded", () => {
+        const loginSection = document.getElementById("login-section");
+        const registerSection = document.getElementById("register-section");
+        const toggleRegisterButton = document.getElementById("toggle-register");
+        const toggleLoginButton = document.getElementById("toggle-login");
+
+        // Função para alternar entre as seções de login e registro
+        function toggleRegisterForm(showRegister) {
+          if (showRegister) {
+            loginSection.classList.add("hidden");
+            registerSection.classList.remove("hidden");
+          } else {
+            loginSection.classList.remove("hidden");
+            registerSection.classList.add("hidden");
+          }
+        }
+
+        // Evento de clique no botão "Não tem uma conta? Registre-se"
+        toggleRegisterButton.addEventListener("click", () => {
+          toggleRegisterForm(true);
+        });
+
+        // Evento de clique no botão "Já tem uma conta? Faça login"
+        toggleLoginButton.addEventListener("click", () => {
+          toggleRegisterForm(false);
+        });
+
         class AlbumCover {
           constructor(options) {
             this.album = options.album;

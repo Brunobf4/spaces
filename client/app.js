@@ -1,22 +1,20 @@
 import { LoginHandler, ProfileHandler, RegisterHandler } from "./auth/auth.js";
 import { FormHandler, PostHandler } from "./handlers.js";
 import createToast from "./toast.js";
-
 // Cria instâncias das classes de tratamento
 const loginHandler = new LoginHandler("login-button");
 const registerHandler = new RegisterHandler("register-form");
-const formHandler = new FormHandler("new-user-form");
 
 // Função para gerenciar a visibilidade das seções
-export function updateSectionsVisibility(isLoggedIn) {
+export function updateSectionsVisibility(isLoggedIn, showRegister = false) {
   if (isLoggedIn) {
     const profileHandler = new ProfileHandler();
     const postHandler = new PostHandler("post-form", "posts-container");
   }
 
   const sections = {
-    "login-section": !isLoggedIn,
-    "register-section": false, // Sempre começa oculto
+    "login-section": !isLoggedIn && !showRegister,
+    "register-section": showRegister,
     "main-content": isLoggedIn,
     "main-nav": isLoggedIn,
   };
@@ -54,6 +52,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const navLinks = nav.querySelectorAll(".nav-link");
   const profileDropdown = document.getElementById("profile-dropdown");
   const profileLinks = profileDropdown.querySelectorAll("ul a");
+  const toggleRegisterButton = document.getElementById("toggle-register");
+  const toggleLoginButton = document.getElementById("toggle-login");
 
   navLinks.forEach((navLink) => {
     navLink.addEventListener("click", (event) => {
@@ -82,11 +82,14 @@ document.addEventListener("DOMContentLoaded", () => {
       // Handle the navigation or function for the selected option
     });
   });
-});
 
-// Atualiza o logout para usar a nova função
-document.getElementById("logout-btn")?.addEventListener("click", () => {
-  localStorage.removeItem("authToken");
-  updateSectionsVisibility(false);
-  createToast("Logout realizado com sucesso!", "success");
+  // Evento de clique no botão "Não tem uma conta? Registre-se"
+  toggleRegisterButton.addEventListener("click", () => {
+    updateSectionsVisibility(false, true);
+  });
+
+  // Evento de clique no botão "Já tem uma conta? Faça login"
+  toggleLoginButton.addEventListener("click", () => {
+    updateSectionsVisibility(false, false);
+  });
 });
