@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" class="scroll-smooth">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -8,20 +8,25 @@
     <script src="../app.js" type="module" defer></script>
   </head>
 
-  <body class="bg-gray-100 font-sans">
-    <header class="bg-gray-900 text-white p-6 shadow-md">
-      <h1 class="text-3xl font-semibold text-center">
-        Bem-vindo à nossa aplicação!
-      </h1>
+  <body class="bg-gray-100 font-sans text-gray-800">
+    <header class="bg-gray-900 text-white py-4 shadow-md">
+      <div class="container mx-auto px-4">
+        <h1 class="text-2xl font-semibold text-center md:text-3xl">
+          Bem-vindo à nossa aplicação!
+        </h1>
+      </div>
     </header>
-    <nav id="main-nav" class="bg-gray-800 text-white p-4" style="display: none">
-      <div class="container mx-auto flex justify-between items-center">
-        <div class="flex items-center space-x-4">
+
+    <nav id="main-nav" class="bg-gray-800 text-white p-4 hidden">
+      <div
+        class="container mx-auto flex justify-between items-center flex-wrap"
+      >
+        <div class="flex items-center space-x-4 mb-2 md:mb-0">
           <span id="nav-user-name" class="font-semibold"></span>
           <a
             href="#"
             id="search-track-button"
-            class="nav-link bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md transition-colors"
+            class="nav-link bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded-md transition-colors text-sm md:text-base"
           >
             Buscar Faixa
           </a>
@@ -30,25 +35,25 @@
           <a
             href="#"
             id="create-post-btn"
-            class="nav-link bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md transition-colors"
-            >Criar Post</a
+            class="nav-link bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded-md transition-colors text-sm md:text-base"
           >
-
+            Criar Post
+          </a>
           <details id="profile-dropdown" class="relative group">
             <summary
-              class="hover:text-gray-300 focus:outline-none cursor-pointer"
+              class="hover:text-gray-300 focus:outline-none cursor-pointer py-2 px-2 rounded-md"
             >
               Perfil
               <span aria-hidden="true">▼</span>
             </summary>
             <ul
-              class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 hidden group-hover:block"
+              class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 hidden group-hover:block z-10"
             >
               <li>
                 <a
                   href="#"
                   id="change-name-btn"
-                  class="block px-4 py-2 text-gray-800 hover:bg-gray-100 w-full text-left"
+                  class="block px-4 py-2 text-gray-800 hover:bg-gray-100 w-full text-left focus:bg-gray-100 focus:outline-none"
                   >Alterar Nome</a
                 >
               </li>
@@ -56,7 +61,7 @@
                 <a
                   href="#"
                   id="change-email-btn"
-                  class="block px-4 py-2 text-gray-800 hover:bg-gray-100 w-full text-left"
+                  class="block px-4 py-2 text-gray-800 hover:bg-gray-100 w-full text-left focus:bg-gray-100 focus:outline-none"
                   >Alterar Email</a
                 >
               </li>
@@ -64,7 +69,7 @@
                 <a
                   href="#"
                   id="change-password-btn"
-                  class="block px-4 py-2 text-gray-800 hover:bg-gray-100 w-full text-left"
+                  class="block px-4 py-2 text-gray-800 hover:bg-gray-100 w-full text-left focus:bg-gray-100 focus:outline-none"
                   >Alterar Senha</a
                 >
               </li>
@@ -73,7 +78,7 @@
                 <a
                   href="#"
                   id="logout-btn"
-                  class="block px-4 py-2 text-red-600 hover:bg-gray-100 w-full text-left"
+                  class="block px-4 py-2 text-red-600 hover:bg-gray-100 w-full text-left focus:bg-gray-100 focus:outline-none"
                   >Deslogar</a
                 >
               </li>
@@ -82,143 +87,154 @@
         </div>
       </div>
     </nav>
-    <section
-      id="login-section"
-      class="bg-white p-8 rounded-xl shadow-lg border border-gray-200 max-w-md mx-auto mt-8"
-    >
-      <h2 class="text-2xl font-semibold mb-6 text-gray-800 text-center">
-        Login
-      </h2>
-      <form id="login-form" class="space-y-4">
-        <div>
-          <label
-            for="login-email"
-            class="block text-gray-700 text-sm font-medium mb-2"
-            >E-mail:</label
+
+    <main class="container mx-auto mt-8 px-4">
+      <section
+        id="login-section"
+        class="bg-white p-6 rounded-xl shadow-lg border max-w-md mx-auto mt-8 flex flex-col items-center sm:max-w-lg lg:max-w-xl"
+      >
+        <h2 class="text-xl font-semibold mb-4 text-gray-800 text-center">
+          Login
+        </h2>
+        <form id="login-form" class="space-y-4 w-full">
+          <div>
+            <label
+              for="login-email"
+              class="block text-gray-700 text-sm font-medium mb-2"
+            >
+              E-mail:
+            </label>
+            <input
+              type="email"
+              id="login-email"
+              name="email"
+              required
+              class="border border-gray-300 rounded-md p-2 w-full focus:ring-2 focus:ring-blue-300 focus:outline-none"
+            />
+          </div>
+          <div>
+            <label
+              for="login-senha"
+              class="block text-gray-700 text-sm font-medium mb-2"
+            >
+              Senha:
+            </label>
+            <input
+              type="password"
+              id="login-senha"
+              name="senha"
+              required
+              class="border border-gray-300 rounded-md p-2 w-full focus:ring-2 focus:ring-blue-300 focus:outline-none"
+            />
+          </div>
+          <button
+            id="login-button"
+            class="bg-green-500 text-white rounded-md p-2 w-full hover:bg-green-600 transition-colors focus:outline-none focus:ring-2 focus:ring-green-300"
           >
-          <input
-            type="email"
-            id="login-email"
-            name="email"
-            required
-            class="border border-gray-300 rounded-md p-2 w-full"
-          />
-        </div>
-        <div>
-          <label
-            for="login-senha"
-            class="block text-gray-700 text-sm font-medium mb-2"
-            >Senha:</label
+            Entrar
+          </button>
+        </form>
+        <div class="mt-4 text-center">
+          <button
+            id="toggle-register"
+            class="text-blue-500 hover:text-blue-700 text-sm focus:outline-none"
           >
-          <input
-            type="password"
-            id="login-senha"
-            name="senha"
-            required
-            class="border border-gray-300 rounded-md p-2 w-full"
-          />
+            Não tem uma conta? Registre-se
+          </button>
         </div>
-        <button
-          id="login-button"
-          class="bg-green-500 text-white rounded-md p-2 w-full hover:bg-green-600 transition-colors"
-        >
-          Entrar
-        </button>
-      </form>
-      <div class="mt-4 text-center">
-        <button
-          id="toggle-register"
-          class="text-blue-500 hover:text-blue-700 text-sm"
-        >
-          Não tem uma conta? Registre-se
-        </button>
-      </div>
-    </section>
-    <section
-      id="register-section"
-      class="bg-white p-8 rounded-xl shadow-lg border border-gray-200 max-w-md mx-auto mt-8"
-    >
-      <h2 class="text-2xl font-semibold mb-6 text-gray-800 text-center">
-        Registrar
-      </h2>
-      <form id="register-form" class="space-y-4">
-        <div>
-          <label
-            for="register-name"
-            class="block text-gray-700 text-sm font-medium mb-2"
-            >Nome:</label
-          >
-          <input
-            type="text"
-            id="register-name"
-            name="name"
-            required
-            class="border border-gray-300 rounded-md p-2 w-full"
-          />
-        </div>
-        <div>
-          <label
-            for="register-email"
-            class="block text-gray-700 text-sm font-medium mb-2"
-            >E-mail:</label
-          >
-          <input
-            type="email"
-            id="register-email"
-            name="email"
-            required
-            class="border border-gray-300 rounded-md p-2 w-full"
-          />
-        </div>
-        <div>
-          <label
-            for="register-senha"
-            class="block text-gray-700 text-sm font-medium mb-2"
-            >Senha:</label
-          >
-          <input
-            type="password"
-            id="register-senha"
-            name="senha"
-            required
-            class="border border-gray-300 rounded-md p-2 w-full"
-          />
-        </div>
-        <button
-          type="submit"
-          class="bg-blue-500 text-white rounded-md p-2 w-full hover:bg-blue-600 transition-colors"
-        >
+      </section>
+
+      <section
+        id="register-section"
+        class="bg-white p-6 rounded-xl shadow-lg border max-w-md mx-auto mt-8 hidden sm:max-w-lg lg:max-w-xl"
+      >
+        <h2 class="text-xl font-semibold mb-4 text-gray-800 text-center">
           Registrar
-        </button>
-      </form>
-      <div class="mt-4 text-center">
-        <button
-          id="toggle-login"
-          class="text-blue-500 hover:text-blue-700 text-sm"
-        >
-          Já tem uma conta? Faça login
-        </button>
-      </div>
-    </section>
-    <main class="container mx-auto mt-10 p-6">
-      <div id="main-content" style="display: none">
+        </h2>
+        <form id="register-form" class="space-y-4 w-full">
+          <div>
+            <label
+              for="register-name"
+              class="block text-gray-700 text-sm font-medium mb-2"
+            >
+              Nome:
+            </label>
+            <input
+              type="text"
+              id="register-name"
+              name="name"
+              required
+              class="border border-gray-300 rounded-md p-2 w-full focus:ring-2 focus:ring-blue-300 focus:outline-none"
+            />
+          </div>
+          <div>
+            <label
+              for="register-email"
+              class="block text-gray-700 text-sm font-medium mb-2"
+            >
+              E-mail:
+            </label>
+            <input
+              type="email"
+              id="register-email"
+              name="email"
+              required
+              class="border border-gray-300 rounded-md p-2 w-full focus:ring-2 focus:ring-blue-300 focus:outline-none"
+            />
+          </div>
+          <div>
+            <label
+              for="register-senha"
+              class="block text-gray-700 text-sm font-medium mb-2"
+            >
+              Senha:
+            </label>
+            <input
+              type="password"
+              id="register-senha"
+              name="senha"
+              required
+              class="border border-gray-300 rounded-md p-2 w-full focus:ring-2 focus:ring-blue-300 focus:outline-none"
+            />
+          </div>
+          <button
+            type="submit"
+            class="bg-blue-500 text-white rounded-md p-2 w-full hover:bg-blue-600 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-300"
+          >
+            Registrar
+          </button>
+        </form>
+        <div class="mt-4 text-center">
+          <button
+            id="toggle-login"
+            class="text-blue-500 hover:text-blue-700 text-sm focus:outline-none"
+          >
+            Já tem uma conta? Faça login
+          </button>
+        </div>
+      </section>
+
+      <div id="main-content" class="mt-10 hidden">
         <!-- Seção de Músicas -->
         <section
-          class="bg-white p-8 rounded-xl shadow-lg border border-gray-200 max-w-2xl mx-auto mb-8"
+          class="bg-white p-6 rounded-xl shadow-lg border border-gray-200 mb-8"
         >
-          <h2 class="text-2xl font-semibold mb-6 text-gray-800 text-center">
+          <h2 class="text-xl font-semibold mb-4 text-gray-800 text-center">
             Músicas
           </h2>
-          <div id="track-list" class="grid grid-cols-1 gap-4">
+          <div
+            id="track-list"
+            class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3"
+          >
             <!-- Faixas serão inseridas aqui dinamicamente -->
           </div>
         </section>
 
         <!-- Seção de Posts -->
         <section
-          class="bg-white p-8 rounded-xl shadow-lg border border-gray-200 max-w-2xl mx-auto mt-8"
+          class="bg-white p-6 rounded-xl shadow-lg border border-gray-200 mt-8"
         >
-          <h2 class="text-2xl font-semibold mb-6 text-gray-800 text-center">
+          <h2 class="text-xl font-semibold mb-4 text-gray-800 text-center">
             Posts
           </h2>
           <div id="posts-container" class="space-y-6">
@@ -227,9 +243,11 @@
         </section>
       </div>
     </main>
+
+    <!-- Modais -->
     <div
       id="edit-profile-modal"
-      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden"
+      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50"
     >
       <div class="bg-white p-6 rounded-lg shadow-xl w-96">
         <h3 id="modal-title" class="text-xl font-semibold mb-4">
@@ -243,13 +261,13 @@
             <button
               type="button"
               id="modal-cancel"
-              class="px-4 py-2 text-gray-600 hover:text-gray-800"
+              class="px-4 py-2 text-gray-600 hover:text-gray-800 focus:outline-none"
             >
               Cancelar
             </button>
             <button
               type="submit"
-              class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+              class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300"
             >
               Salvar
             </button>
@@ -257,16 +275,17 @@
         </form>
       </div>
     </div>
+
     <div
       id="post-modal"
       class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50"
     >
-      <div class="bg-white p-8 rounded-xl shadow-lg max-w-2xl w-full mx-4">
+      <div class="bg-white p-6 rounded-xl shadow-lg max-w-2xl w-full mx-4">
         <div class="flex justify-between items-center mb-6">
-          <h2 class="text-2xl font-semibold text-gray-800">Criar Novo Post</h2>
+          <h2 class="text-xl font-semibold text-gray-800">Criar Novo Post</h2>
           <button
             id="close-post-modal"
-            class="text-gray-500 hover:text-gray-700"
+            class="text-gray-500 hover:text-gray-700 focus:outline-none"
           >
             <svg
               class="w-6 h-6"
@@ -295,7 +314,7 @@
               id="post-title"
               name="title"
               required
-              class="border border-gray-300 rounded-md p-2 w-full"
+              class="border border-gray-300 rounded-md p-2 w-full focus:ring-2 focus:ring-blue-300 focus:outline-none"
             />
           </div>
           <div>
@@ -308,7 +327,7 @@
               id="post-content"
               name="content"
               rows="4"
-              class="border border-gray-300 rounded-md p-2 w-full resize-none"
+              class="border border-gray-300 rounded-md p-2 w-full resize-none focus:ring-2 focus:ring-blue-300 focus:outline-none"
             ></textarea>
           </div>
           <div>
@@ -322,20 +341,20 @@
               id="post-media"
               name="media"
               accept="audio/*,video/*,image/*,text/*"
-              class="border border-gray-300 rounded-md p-2 w-full"
+              class="border border-gray-300 rounded-md p-2 w-full focus:ring-2 focus:ring-blue-300 focus:outline-none"
             />
           </div>
           <div class="flex justify-end space-x-2 mt-6">
             <button
               type="button"
               id="cancel-post"
-              class="px-4 py-2 text-gray-600 hover:text-gray-800"
+              class="px-4 py-2 text-gray-600 hover:text-gray-800 focus:outline-none"
             >
               Cancelar
             </button>
             <button
               type="submit"
-              class="bg-blue-500 text-white rounded-md px-4 py-2 hover:bg-blue-600 transition-colors"
+              class="bg-blue-500 text-white rounded-md px-4 py-2 hover:bg-blue-600 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-300"
             >
               Publicar
             </button>
@@ -343,12 +362,15 @@
         </form>
       </div>
     </div>
+
     <script type="module">
       document.addEventListener("DOMContentLoaded", () => {
         const loginSection = document.getElementById("login-section");
         const registerSection = document.getElementById("register-section");
         const toggleRegisterButton = document.getElementById("toggle-register");
         const toggleLoginButton = document.getElementById("toggle-login");
+        const mainNav = document.getElementById("main-nav");
+        const mainContent = document.getElementById("main-content");
 
         // Função para alternar entre as seções de login e registro
         function toggleRegisterForm(showRegister) {
@@ -369,6 +391,15 @@
         // Evento de clique no botão "Já tem uma conta? Faça login"
         toggleLoginButton.addEventListener("click", () => {
           toggleRegisterForm(false);
+        });
+        //Simulação de login para visualizar menu e main-content
+        const loginButton = document.getElementById("login-button");
+        loginButton.addEventListener("click", function (e) {
+          e.preventDefault();
+          mainNav.classList.remove("hidden");
+          mainContent.classList.remove("hidden");
+          loginSection.classList.add("hidden");
+          registerSection.classList.add("hidden");
         });
 
         class AlbumCover {
