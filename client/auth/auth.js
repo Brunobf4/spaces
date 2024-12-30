@@ -43,6 +43,7 @@ class LoginHandler {
       if (response.ok) {
         localStorage.setItem("authToken", data.token);
         createToast("Login realizado com sucesso!", "success");
+
         updateSectionsVisibility(true);
       } else {
         createToast(data.message || "Erro ao fazer login", "error");

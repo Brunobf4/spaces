@@ -6,11 +6,14 @@ import createToast from "./toast.js";
 const loginHandler = new LoginHandler("login-button");
 const registerHandler = new RegisterHandler("register-form");
 const formHandler = new FormHandler("new-user-form");
-const profileHandler = new ProfileHandler();
-const postHandler = new PostHandler("post-form", "posts-container");
 
 // Função para gerenciar a visibilidade das seções
 export function updateSectionsVisibility(isLoggedIn) {
+  if (isLoggedIn) {
+    const profileHandler = new ProfileHandler();
+    const postHandler = new PostHandler("post-form", "posts-container");
+  }
+
   const sections = {
     "login-section": !isLoggedIn,
     "register-section": false, // Sempre começa oculto
