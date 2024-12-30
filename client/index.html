@@ -362,6 +362,12 @@
         </form>
       </div>
     </div>
+    <div id="loading-overlay" class="fixed hidden inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center"></div>
+    <div class="bg-white p-8 rounded-lg text-center">
+        <div class="loader"></div>
+        <p id="loading-text" class="mt-4 text-gray-700">Carregando...</p>
+    </div>
+</div>
 
     <script type="module">
       document.addEventListener("DOMContentLoaded", () => {

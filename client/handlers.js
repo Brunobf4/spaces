@@ -118,12 +118,13 @@ class SearchUserHandler {
 
 // Adicione a nova classe ProfileHandler
 
-// Adicione a nova classe PostHandler
 class PostHandler {
   constructor(formId, postsContainerId) {
     this.form = document.getElementById(formId);
     this.postsContainer = document.getElementById(postsContainerId);
     this.modal = document.getElementById("post-modal");
+    this.loadingOverlay = document.getElementById("loading-overlay"); // Overlay para loading
+    this.loadingText = document.getElementById("loading-text"); // Texto de loading (pode substituir por spinner)
 
     // Botões do modal
     document
@@ -244,9 +245,14 @@ class PostHandler {
   async handleSubmit(event) {
     event.preventDefault();
 
+    const submitButton = this.form.querySelector('button[type="submit"]'); // Seleciona o botão de submit
     const title = document.getElementById("post-title").value;
     const content = document.getElementById("post-content").value;
     const mediaFile = document.getElementById("post-media").files[0];
+
+    // Exibe o loading e desabilita o botão
+    this.showLoading();
+    submitButton.disabled = true;
 
     try {
       let mediaData = null;
@@ -311,6 +317,10 @@ class PostHandler {
     } catch (error) {
       console.error("Erro ao criar post:", error);
       createToast(error.message || "Erro ao criar post", "error");
+    } finally {
+      // Esconde o loading e reabilita o botão (sempre executa ao final)
+      this.hideLoading();
+      submitButton.disabled = false;
     }
   }
 
@@ -427,7 +437,16 @@ class PostHandler {
         return "";
     }
   }
-}
 
+  showLoading() {
+    this.loadingOverlay.classList.remove("hidden"); // Exibe o overlay
+    this.loadingText.textContent = "Criando Post..."; // Define o texto de loading
+  }
+
+  hideLoading() {
+    this.loadingOverlay.classList.add("hidden"); // Esconde o overlay
+    this.loadingText.textContent = ""; // Limpa o texto de loading
+  }
+}
 // Exporte a nova classe junto com as outras
 export { FormHandler, ListUsersHandler, SearchUserHandler, PostHandler };
