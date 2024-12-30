@@ -264,7 +264,11 @@ export default class User {
 
   static async generateEmbedding(
     text: string,
+<<<<<<< HEAD
     model: string = "granite-embedding:278m"
+=======
+    model: string = "smollm2"
+>>>>>>> refs/remotes/origin/main
   ): Promise<string | null> {
     try {
       const response = await fetch("http://localhost:11434/api/embed", {
