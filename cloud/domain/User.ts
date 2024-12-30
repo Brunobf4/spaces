@@ -408,6 +408,17 @@ export default class User {
     }
   }
 
+  static async updatePostsTable(): Promise<void> {
+    try {
+      if (!this._db) throw new Error("Database not initialized");
+      this._db.exec("ALTER TABLE posts ADD COLUMN embedding TEXT");
+      console.log("Coluna 'embedding' adicionada à tabela 'posts'.");
+    } catch (err) {
+      console.error("Erro ao atualizar tabela de posts:", err);
+      throw err;
+    }
+  }
+
   get name(): string {
     return this._name;
   }
