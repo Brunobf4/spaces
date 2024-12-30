@@ -225,7 +225,6 @@ export default class User {
       throw err;
     }
   }
-
   static createPostsTable(): void {
     const createTableSQL = `
       CREATE TABLE IF NOT EXISTS posts (
@@ -235,6 +234,8 @@ export default class User {
         content TEXT,
         media_type TEXT NOT NULL,
         media_data TEXT,
+        embedding TEXT,
+        model_comment TEXT,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (user_email) REFERENCES users(email)
       );
@@ -261,6 +262,68 @@ export default class User {
     }
   }
 
+  static async generateEmbedding(
+    text: string,
+    model: string = "tinyllama:1.1b"
+  ): Promise<string | null> {
+    try {
+      const response = await fetch("http://localhost:11434/api/embed", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ model: model, input: text }),
+      });
+
+      if (!response.ok) {
+        console.error(
+          "Erro ao gerar embedding:",
+          response.status,
+          await response.text()
+        );
+        return null;
+      }
+      const data = await response.json();
+      return JSON.stringify(data.embeddings[0]);
+    } catch (error) {
+      console.error("Erro na comunicação com a API de embedding:", error);
+      return null;
+    }
+  }
+
+  static async generateModelComment(
+    postContent: string,
+    model: string = "tinyllama:1.1b"
+  ): Promise<string | null> {
+    try {
+      const response = await fetch("http://localhost:11434/api/generate", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          model: model,
+          prompt: `Gere um comentário breve sobre o seguinte post: ${postContent}.`,
+          stream: false,
+        }),
+      });
+
+      if (!response.ok) {
+        console.error(
+          "Erro ao gerar comentário do modelo:",
+          response.status,
+          await response.text()
+        );
+        return null;
+      }
+      const data = await response.json();
+      return data.response;
+    } catch (error) {
+      console.error("Erro na comunicação com a API para comentário:", error);
+      return null;
+    }
+  }
+
   static async createPost(
     userEmail: string,
     post: {
@@ -274,10 +337,17 @@ export default class User {
       await this.initializeDatabase();
     }
     try {
+      const embedding = await this.generateEmbedding(
+        post.title + " " + post.content
+      );
+      const modelComment = await this.generateModelComment(
+        post.title + " " + post.content
+      );
+
       const stmt = this._db?.prepare(`
-        INSERT INTO posts (user_email, title, content, media_type, media_data)
-        VALUES ($userEmail, $title, $content, $mediaType, $mediaData)
-      `);
+          INSERT INTO posts (user_email, title, content, media_type, media_data, embedding, model_comment)
+          VALUES ($userEmail, $title, $content, $mediaType, $mediaData, $embedding, $modelComment)
+        `);
 
       const result = stmt.run({
         $userEmail: userEmail,
@@ -285,11 +355,15 @@ export default class User {
         $content: post.content || null,
         $mediaType: post.mediaType,
         $mediaData: post.mediaData || null,
+        $embedding: embedding || null,
+        $modelComment: modelComment || null,
       });
 
       return {
         id: result.lastInsertRowid,
         ...post,
+        embedding,
+        modelComment,
       };
     } catch (err) {
       console.error("Erro ao criar post:", err);
@@ -303,10 +377,10 @@ export default class User {
     }
     try {
       const stmt = this._db?.prepare(`
-        SELECT * FROM posts 
-        WHERE user_email = $userEmail 
-        ORDER BY created_at DESC
-      `);
+          SELECT * FROM posts 
+          WHERE user_email = $userEmail 
+          ORDER BY created_at DESC
+        `);
 
       return stmt.all({ $userEmail: userEmail });
     } catch (err) {

@@ -355,6 +355,11 @@ class PostHandler {
           post.created_at
         ).toLocaleString()}
         </div>
+        <div class="text-sm text-gray-700 mt-2">
+          <strong>Comentário do Modelo:</strong> ${
+            post.model_comment || "Nenhum comentário disponível."
+          }
+        </div>
       </article>
     `
       )
