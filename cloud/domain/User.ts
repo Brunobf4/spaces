@@ -264,7 +264,7 @@ export default class User {
 
   static async generateEmbedding(
     text: string,
-    model: string = "tinyllama:1.1b"
+    model: string = "granite-embedding:278m"
   ): Promise<string | null> {
     try {
       const response = await fetch("http://localhost:11434/api/embed", {
@@ -293,7 +293,7 @@ export default class User {
 
   static async generateModelComment(
     postContent: string,
-    model: string = "tinyllama:1.1b"
+    model: string = "smollm2"
   ): Promise<string | null> {
     try {
       const response = await fetch("http://localhost:11434/api/generate", {
